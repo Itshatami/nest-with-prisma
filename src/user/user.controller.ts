@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put , UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { UserService } from './user.service';
+import { UserTransformInterceptor } from './interceptors/transform.interceptor';
 
 
 @Controller('users')
@@ -18,6 +19,7 @@ export class UserController {
 
    // Show
    @Get("/:id")
+   @UseInterceptors(UserTransformInterceptor)
    async getUser(@Param("id" , ParseIntPipe) param:number){
       const user = await this.userService.findOne(param);
       if(!user) return "not found."
